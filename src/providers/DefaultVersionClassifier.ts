@@ -32,7 +32,7 @@ export class DefaultVersionClassifier implements VersionClassifier {
     }
 
     protected getNextVersion(current: ReleaseInformation, type: VersionType): ({ major: number, minor: number, patch: number }) {
-        
+
         switch (type) {
             case VersionType.Major:
                 return { major: current.major + 1, minor: 0, patch: 0 };
@@ -49,6 +49,7 @@ export class DefaultVersionClassifier implements VersionClassifier {
 
     private resolveCommitType(commitsSet: CommitInfoSet): ({ type: VersionType, increment: number, changed: boolean }) {
         if (commitsSet.commits.length === 0) {
+            console.log("Found no commits");
             return { type: VersionType.None, increment: 0, changed: commitsSet.changed };
         }
 
@@ -56,6 +57,7 @@ export class DefaultVersionClassifier implements VersionClassifier {
         let index = 1;
         for (let commit of commits) {
             if (this.majorPattern(commit)) {
+                console.log("Found major bump");
                 return { type: VersionType.Major, increment: commits.length - index, changed: commitsSet.changed };
             }
             index++;
@@ -64,11 +66,13 @@ export class DefaultVersionClassifier implements VersionClassifier {
         index = 1;
         for (let commit of commits) {
             if (this.minorPattern(commit)) {
+                console.log("Found minor bump");
                 return { type: VersionType.Minor, increment: commits.length - index, changed: commitsSet.changed };
             }
             index++;
         }
 
+        console.log("Default (patch) bump");
         return { type: VersionType.Patch, increment: commitsSet.commits.length - 1, changed: true };
     }
 
