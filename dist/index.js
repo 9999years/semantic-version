@@ -816,6 +816,7 @@ class DefaultVersionClassifier {
         }
     }
     getNextVersion(current, type) {
+        console.log('current version:', current);
         console.log('bump type:', type);
         switch (type) {
             case VersionType_1.VersionType.Major:
