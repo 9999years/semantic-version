@@ -816,6 +816,7 @@ class DefaultVersionClassifier {
         }
     }
     getNextVersion(current, type) {
+        console.log('bump type:', type);
         switch (type) {
             case VersionType_1.VersionType.Major:
                 return { major: current.major + 1, minor: 0, patch: 0 };
@@ -831,12 +832,14 @@ class DefaultVersionClassifier {
     }
     resolveCommitType(commitsSet) {
         if (commitsSet.commits.length === 0) {
+            console.log("Found no commits");
             return { type: VersionType_1.VersionType.None, increment: 0, changed: commitsSet.changed };
         }
         const commits = commitsSet.commits.reverse();
         let index = 1;
         for (let commit of commits) {
             if (this.majorPattern(commit)) {
+                console.log("Found major bump");
                 return { type: VersionType_1.VersionType.Major, increment: commits.length - index, changed: commitsSet.changed };
             }
             index++;
@@ -844,10 +847,12 @@ class DefaultVersionClassifier {
         index = 1;
         for (let commit of commits) {
             if (this.minorPattern(commit)) {
+                console.log("Found minor bump");
                 return { type: VersionType_1.VersionType.Minor, increment: commits.length - index, changed: commitsSet.changed };
             }
             index++;
         }
+        console.log("Default (patch) bump");
         return { type: VersionType_1.VersionType.Patch, increment: commitsSet.commits.length - 1, changed: true };
     }
     ClassifyAsync(lastRelease, commitSet) {

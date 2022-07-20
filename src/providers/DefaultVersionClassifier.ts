@@ -32,6 +32,7 @@ export class DefaultVersionClassifier implements VersionClassifier {
     }
 
     protected getNextVersion(current: ReleaseInformation, type: VersionType): ({ major: number, minor: number, patch: number }) {
+        console.log('bump type:', type)
 
         switch (type) {
             case VersionType.Major:
